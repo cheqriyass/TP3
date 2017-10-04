@@ -12,17 +12,20 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private int score = 0;
-    private int level = 0;
+    private int level = 1;
     private TextView displayScore;
     private TextView displayLevel;
     private TextView lnumberV;
     final static String EXTRA_LEVEL = "EXTRA_LEVEL";
     final static String EXTRA_LAUNCHES = "NUMBER_OF_LAUNCHES_REQUEST";
     final static String TEXT_SIZE = "TEXT_SIZE";
-    private Intent intent;
+    private Intent messageIntent;
+    private Intent settingsIntent;
     private int NUMBER_OF_LAUNCHES_REQUEST=0;
     private int NUMBER_OF_LAUNCHES_REQUEST2=2;
     private int size = 2;
+    private int launches = 0;
+
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
@@ -36,16 +39,17 @@ public class MainActivity extends AppCompatActivity {
         displayLevel = (TextView) findViewById(R.id.displayLevel);
         lnumberV = (TextView) findViewById(R.id.lnumberV);
         changeTextSize();
-        intent = new Intent(this, LevelActivity.class);
-
+        messageIntent = new Intent(this, LevelActivity.class);
+        updateDisplay();
         btnAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 if (++score==5){
                     score=0;
                     level++;
-                    intent.putExtra(EXTRA_LEVEL, level);
-                    startActivityForResult(intent, NUMBER_OF_LAUNCHES_REQUEST);
+                    messageIntent.putExtra(EXTRA_LEVEL, level);
+                    messageIntent.putExtra(TEXT_SIZE, size);
+                    startActivityForResult(messageIntent, NUMBER_OF_LAUNCHES_REQUEST);
                     updateDisplay();
                 }
                 updateDisplay();
@@ -72,9 +76,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settingsAction:
-                intent = new Intent(this, settingsActivity.class);
-                intent.putExtra(TEXT_SIZE, size);
-                startActivityForResult(intent, NUMBER_OF_LAUNCHES_REQUEST2);
+                settingsIntent = new Intent(this, settingsActivity.class);
+                settingsIntent.putExtra(TEXT_SIZE, size);
+                startActivityForResult(settingsIntent, NUMBER_OF_LAUNCHES_REQUEST2);
                 return true;
 
         }
@@ -84,14 +88,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == NUMBER_OF_LAUNCHES_REQUEST && resultCode == RESULT_OK) {
-            int launches = data.getIntExtra(EXTRA_LAUNCHES, 0);
-            lnumberV.setText("Nombre de fois lancé : " + launches);
-
+            launches = data.getIntExtra(EXTRA_LAUNCHES, 0);
+            updateDisplay();
         }
         if (requestCode == NUMBER_OF_LAUNCHES_REQUEST2 && resultCode == RESULT_OK) {
             size = data.getIntExtra(TEXT_SIZE, 2);
             changeTextSize();
-
         }
     }
 
@@ -118,11 +120,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void rest(){
         score = 0;
-        level = 0;
+        level = 1;
+        size = 2;
+        changeTextSize();
+        updateDisplay();
     }
 
     public void updateDisplay(){
         displayScore.setText("votre score : " + score);
         displayLevel.setText("votre niveau : " + level);
+        lnumberV.setText("Nombre de fois lancé : " + launches);
     }
 }

@@ -12,7 +12,9 @@ public class LevelActivity extends AppCompatActivity {
 
     private TextView displayMessage;
     private TextView displayCompteur;
-    static private int compteur = 0;
+    private int size=0;
+    private int level=0;
+    private static int compteur = 0;
     private static final String TAG = "message";
     final static String NUMBER_OF_LAUNCHES_REQUEST = "NUMBER_OF_LAUNCHES_REQUEST";
 
@@ -24,12 +26,13 @@ public class LevelActivity extends AppCompatActivity {
         compteur++;
         Button btnBack = (Button) findViewById(R.id.btnBack);
         Intent intent = getIntent();
-        int level = intent.getIntExtra(MainActivity.EXTRA_LEVEL,1);
+        level = intent.getIntExtra(MainActivity.EXTRA_LEVEL,1);
+        size = intent.getIntExtra(MainActivity.TEXT_SIZE,2);
 
         displayMessage = (TextView) findViewById(R.id.displayMessage);
         displayCompteur = (TextView) findViewById(R.id.displayCompteur);
-        displayMessage.setText("Votre niveau : " + level);
-        displayCompteur.setText("Nombre d'éxecution : " + compteur);
+        changeTextSize();
+        updateDisplay();
 
         btnBack.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -47,6 +50,37 @@ public class LevelActivity extends AppCompatActivity {
         setResult(RESULT_OK, data);
         super.finish();
     }
+
+
+
+    public void changeTextSize(){
+        int taille = 20;
+        switch(size){
+            case 1:
+                taille = 12;
+                break;
+            case 2:
+                taille = 20;
+                break;
+            case 3:
+                taille = 30;
+                break;
+            default:
+                taille = 20;
+                break;
+        }
+        displayMessage.setTextSize(taille);
+        displayCompteur.setTextSize(taille);
+    }
+
+
+    public void updateDisplay(){
+        displayMessage.setText("Votre niveau : " + level);
+        displayCompteur.setText("Nombre d'éxecution : " + compteur);
+    }
+
+
+
 
     @Override
     protected void onStart() {
