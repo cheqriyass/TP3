@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Intent settingsIntent;
     private int NUMBER_OF_LAUNCHES_REQUEST=0;
     private int NUMBER_OF_LAUNCHES_REQUEST2=2;
-    private int size = 2;
+    public static int size = 2;
     private int launches = 0;
 
 
@@ -96,23 +96,21 @@ public class MainActivity extends AppCompatActivity {
             changeTextSize();
         }
     }
-
-    public void changeTextSize(){
-        int taille = 20;
+    static public int convertSize(int size){
         switch(size){
             case 1:
-                taille = 12;
-                break;
+                return 12;
             case 2:
-                taille = 20;
-                break;
+                return 20;
             case 3:
-                taille = 30;
-                break;
+                return 30;
             default:
-                taille = 20;
-                break;
+                return 20;
         }
+    }
+
+    public void changeTextSize(){
+        int taille = convertSize(size);
         displayScore.setTextSize(taille);
         displayLevel.setTextSize(taille);
         lnumberV.setTextSize(taille);

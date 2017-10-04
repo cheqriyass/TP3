@@ -15,7 +15,7 @@ public class LevelActivity extends AppCompatActivity {
     private int size=0;
     private int level=0;
     private static int compteur = 0;
-    private static final String TAG = "message";
+    private static final String TAG = "myMessage";
     final static String NUMBER_OF_LAUNCHES_REQUEST = "NUMBER_OF_LAUNCHES_REQUEST";
 
     @Override
@@ -54,21 +54,7 @@ public class LevelActivity extends AppCompatActivity {
 
 
     public void changeTextSize(){
-        int taille = 20;
-        switch(size){
-            case 1:
-                taille = 12;
-                break;
-            case 2:
-                taille = 20;
-                break;
-            case 3:
-                taille = 30;
-                break;
-            default:
-                taille = 20;
-                break;
-        }
+        int taille = MainActivity.convertSize(size);
         displayMessage.setTextSize(taille);
         displayCompteur.setTextSize(taille);
     }
@@ -86,6 +72,7 @@ public class LevelActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.v(TAG, "Fonction onStart() applée");
+        Log.v(TAG, "textSize : " + MainActivity.size);
     }
 
     @Override
