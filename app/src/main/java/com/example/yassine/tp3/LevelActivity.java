@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,9 +16,10 @@ public class LevelActivity extends AppCompatActivity {
     private TextView displayCompteur;
     private int size=0;
     private int level=0;
-    private static int compteur = 0;
+    private Intent settingsIntent;
+    public static int compteur = 0;
     private static final String TAG = "myMessage";
-    final static String NUMBER_OF_LAUNCHES_REQUEST = "NUMBER_OF_LAUNCHES_REQUEST";
+    final static int SIZE_REQUEST_CODE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +45,38 @@ public class LevelActivity extends AppCompatActivity {
         });
     }
 
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settingsAction:
+                settingsIntent = new Intent(this, settingsActivity.class);
+                settingsIntent.putExtra(MainActivity.TEXT_SIZE, size);
+                startActivityForResult(settingsIntent, SIZE_REQUEST_CODE);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SIZE_REQUEST_CODE && resultCode == RESULT_OK) {
+            size = data.getIntExtra(MainActivity.TEXT_SIZE, 2);
+            changeTextSize();
+            MainActivity.size = size;
+        }
+    }
+
 
     @Override
     public void finish() {
         Intent data = new Intent();
-        data.putExtra(NUMBER_OF_LAUNCHES_REQUEST, compteur);
+        data.putExtra(MainActivity.EXTRA_LAUNCHES, compteur);
         setResult(RESULT_OK, data);
         super.finish();
     }
@@ -72,7 +102,6 @@ public class LevelActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Log.v(TAG, "Fonction onStart() applée");
-        Log.v(TAG, "textSize : " + MainActivity.size);
     }
 
     @Override

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+
     private int score = 0;
     private int level = 1;
     private TextView displayScore;
@@ -21,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     final static String TEXT_SIZE = "TEXT_SIZE";
     private Intent messageIntent;
     private Intent settingsIntent;
-    private int NUMBER_OF_LAUNCHES_REQUEST=0;
-    private int NUMBER_OF_LAUNCHES_REQUEST2=2;
+    private Intent recyclerIntent;
+    private int NUMBER_OF_LAUNCHES_REQUEST_CODE=0;
+    private int SETTINGS_REQUEST_CODE =2;
     public static int size = 2;
     private int launches = 0;
 
@@ -31,15 +33,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Button btnAdd = (Button) findViewById(R.id.btnAjouter);
         Button btnReset = (Button) findViewById(R.id.btnReset);
+        Button btnRecycler = (Button) findViewById(R.id.btnRecycler);
 
         displayScore = (TextView) findViewById(R.id.displayScore);
         displayLevel = (TextView) findViewById(R.id.displayLevel);
         lnumberV = (TextView) findViewById(R.id.lnumberV);
         changeTextSize();
         messageIntent = new Intent(this, LevelActivity.class);
+        recyclerIntent = new Intent(this, recyclerTest.class);
         updateDisplay();
         btnAdd.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -49,11 +52,19 @@ public class MainActivity extends AppCompatActivity {
                     level++;
                     messageIntent.putExtra(EXTRA_LEVEL, level);
                     messageIntent.putExtra(TEXT_SIZE, size);
-                    startActivityForResult(messageIntent, NUMBER_OF_LAUNCHES_REQUEST);
+                    startActivityForResult(messageIntent, NUMBER_OF_LAUNCHES_REQUEST_CODE);
                     updateDisplay();
                 }
                 updateDisplay();
 
+            }
+        });
+
+
+        btnRecycler.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                startActivity(recyclerIntent);
             }
         });
 
@@ -78,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.settingsAction:
                 settingsIntent = new Intent(this, settingsActivity.class);
                 settingsIntent.putExtra(TEXT_SIZE, size);
-                startActivityForResult(settingsIntent, NUMBER_OF_LAUNCHES_REQUEST2);
+                startActivityForResult(settingsIntent, SETTINGS_REQUEST_CODE);
                 return true;
 
         }
@@ -87,13 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == NUMBER_OF_LAUNCHES_REQUEST && resultCode == RESULT_OK) {
+        if (requestCode == NUMBER_OF_LAUNCHES_REQUEST_CODE && resultCode == RESULT_OK) {
             launches = data.getIntExtra(EXTRA_LAUNCHES, 0);
             updateDisplay();
         }
-        if (requestCode == NUMBER_OF_LAUNCHES_REQUEST2 && resultCode == RESULT_OK) {
+        if (requestCode == SETTINGS_REQUEST_CODE && resultCode == RESULT_OK) {
             size = data.getIntExtra(TEXT_SIZE, 2);
-            changeTextSize();
+            updateDisplay();
         }
     }
     static public int convertSize(int size){
@@ -119,14 +130,15 @@ public class MainActivity extends AppCompatActivity {
     public void rest(){
         score = 0;
         level = 1;
-        size = 2;
-        changeTextSize();
+        LevelActivity.compteur = 0;
+        launches = 0;
         updateDisplay();
     }
 
     public void updateDisplay(){
-        displayScore.setText("votre score : " + score);
-        displayLevel.setText("votre niveau : " + level);
+        changeTextSize();
+        displayScore.setText("Votre score : " + score);
+        displayLevel.setText("Votre niveau : " + level);
         lnumberV.setText("Nombre de fois lancé : " + launches);
     }
 }
